@@ -46,7 +46,7 @@ export function Header({ isAuthenticated, onSignOut }: HeaderProps): React.React
                   </NavLink>
                 </li>
                 <li className="nav-item">
-                  <NavLink className="nav-link" to="expenses">
+                  <NavLink className="nav-link" to="stats">
                     Expenses
                   </NavLink>
                 </li>
