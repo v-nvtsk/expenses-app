@@ -7,7 +7,7 @@ import "./bootstrap.min.css";
 
 export const Root = () => (
   <Provider store={Store}>
-    <BrowserRouter>
+    <BrowserRouter basename="/otus-jsbasic-dz49-expenses">
       <App />
     </BrowserRouter>
   </Provider>
