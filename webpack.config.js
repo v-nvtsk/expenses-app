@@ -10,7 +10,7 @@ module.exports = (env) => ({
   output: {
     path: path.resolve(__dirname, "dist"),
     filename: "bundle.js",
-    publicPath: "/",
+    publicPath: "/otus-jsbasic-dz49-expenses",
   },
   resolve: {
     extensions: [".js", ".ts", ".tsx"],
