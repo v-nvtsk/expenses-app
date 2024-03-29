@@ -14,7 +14,7 @@ module.exports = {
     tsconfigRootDir: __dirname,
   },
   rules: {
-    semi: [2, "always"],
+    semi: ["error", "always"],
     "import/no-unresolved": "off",
     "import/extensions": ["warn", "never"],
     "import/no-extraneous-dependencies": [
