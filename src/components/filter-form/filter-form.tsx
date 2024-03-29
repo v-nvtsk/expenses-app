@@ -58,7 +58,6 @@ export const FilterForm = ({ filter, onFilterChange }: Props) => {
 
   return (
     <form className=" d-flex flex-column col-12 col-md-6">
-      {/* border border-1 border-primary */}
       <Select value={view} onChange={callbacks.onViewChange} />
       {view === "period" && <FilterPeriod filter={filter} onChange={callbacks.onChange} />}
       {view === "week" && <FilterWeek filter={filter} onChange={callbacks.onChange} />}

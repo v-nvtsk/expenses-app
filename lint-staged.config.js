@@ -5,18 +5,4 @@ module.exports = {
   "*.md": "npm run format --list-different",
 };
 
-/* 
 
-  "lint-staged": {
-    "*.{ts,tsx}": [
-      "npx prettier --write",
-      "npx eslint --fix",
-      "npx tsc --noEmit"
-    ],
-    "*.{css,scss}": [
-      "npx stylelint --",
-      "npx prettier --write"
-    ],
-    "*.md": "prettier --list-different"
-  }
-*/

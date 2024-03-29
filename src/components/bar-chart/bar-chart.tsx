@@ -17,7 +17,6 @@ export const BarChart = memo(({ data }: Props) => {
 
   const processedData = [
     ...data.categories
-      // .filter(c => c.parentId === "")
       .map((category): [string, number] => {
         const sum = data.expenses.reduce((acc, el) => {
           if (el.categoryId === category.id) return acc + el.amount;

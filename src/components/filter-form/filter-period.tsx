@@ -59,8 +59,6 @@ export const FilterPeriod = ({ filter, onChange }: Props) => {
           </label>
           <input ref={toRef} type="date" name="dateTo" id="dateTo" defaultValue={timestampToDateInputValue(dateTo)} />
         </div>
-        {/* <div className="col-2"> */}
-        {/* </div> */}
       </div>
       <button type="submit" className="btn btn-primary mt-3" onClick={callbacks.onSubmit}>
         Set filter

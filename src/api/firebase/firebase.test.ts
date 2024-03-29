@@ -209,7 +209,6 @@ describe("firebase", () => {
     });
 
     describe("Reset password", () => {
-      // if user exists
       it("should reset password if user exists", async () => {
         const url = `https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=${API_KEY}`;
         const options = {
@@ -225,7 +224,6 @@ describe("firebase", () => {
         expect(global.fetch).toHaveBeenLastCalledWith(url, options);
       });
 
-      // if no user exists
       it("should return null if no user exists", async () => {
         global.fetch = mockAuthFetch400;
         expect(await fireStore.resetPassword(USER_PREFIX)).toBeNull();
