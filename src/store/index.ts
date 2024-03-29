@@ -25,9 +25,9 @@ const reducerProxy = (state: any, action: { type: string; payload: any }) => {
   return appReducer(state, action);
 };
 
-export const Store = configureStore({
+export const store = configureStore({
   reducer: reducerProxy,
   middleware: (getDefaultMiddleware) => getDefaultMiddleware(),
 });
 
-export type AppDispatch = typeof Store.dispatch;
+export type AppDispatch = typeof store.dispatch;

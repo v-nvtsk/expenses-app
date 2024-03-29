@@ -2,7 +2,7 @@ import { Provider } from "react-redux";
 import { act, fireEvent, render, within } from "@testing-library/react";
 import React from "react";
 import { AddExpenses } from ".";
-import { Store } from "../../store";
+import { store } from "../../store";
 import firebase from "../../api/firebase/firebase";
 
 jest.mock("../../api/firebase/firebase.ts");
@@ -15,7 +15,7 @@ describe("AddExpenses", () => {
   it("should render ", async () => {
     const component = await act(async () =>
       render(
-        <Provider store={Store}>
+        <Provider store={store}>
           <AddExpenses />
         </Provider>,
       ),
@@ -46,7 +46,7 @@ describe("AddExpenses", () => {
     });
     const component = await act(async () =>
       render(
-        <Provider store={Store}>
+        <Provider store={store}>
           <AddExpenses />
         </Provider>,
       ),
@@ -69,7 +69,7 @@ describe("AddExpenses", () => {
 
     const component = await act(async () =>
       render(
-        <Provider store={Store}>
+        <Provider store={store}>
           <AddExpenses />
         </Provider>,
       ),

@@ -2,7 +2,7 @@ import { act, render, waitFor } from "@testing-library/react";
 import React from "react";
 import { Provider } from "react-redux";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
-import { Store } from "../../store";
+import { store } from "../../store";
 import { Auth } from "./auth";
 import firebase from "../../api/firebase/firebase";
 import { AuthForm } from "../../components/auth-form";
@@ -25,7 +25,7 @@ describe("Calendar page", () => {
   it("should render page with signin form", async () => {
     const component = await act(async () =>
       render(
-        <Provider store={Store}>
+        <Provider store={store}>
           <MemoryRouter initialEntries={["/signin"]}>
             <Routes>
               <Route
@@ -55,7 +55,7 @@ describe("Calendar page", () => {
   it("should render page with signup form", async () => {
     const component = await act(async () =>
       render(
-        <Provider store={Store}>
+        <Provider store={store}>
           <MemoryRouter initialEntries={["/signup"]}>
             <Routes>
               <Route
@@ -85,7 +85,7 @@ describe("Calendar page", () => {
   it("should render page with recover password form", async () => {
     const component = await act(async () =>
       render(
-        <Provider store={Store}>
+        <Provider store={store}>
           <MemoryRouter initialEntries={["/recover"]}>
             <Auth
               authState={{
@@ -107,7 +107,7 @@ describe("Calendar page", () => {
     MockAuthFrom.mockImplementation((props: any) => <AuthForm {...props} />);
     const component = await act(async () =>
       render(
-        <Provider store={Store}>
+        <Provider store={store}>
           <MemoryRouter initialEntries={["/signin"]}>
             <Auth
               authState={{

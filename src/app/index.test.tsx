@@ -2,7 +2,7 @@ import { act, render, screen, within } from "@testing-library/react";
 import React from "react";
 import { Provider } from "react-redux";
 import { MemoryRouter } from "react-router-dom";
-import { Store } from "../store";
+import { store } from "../store";
 import App from "./app";
 
 jest.mock("../api/firebase/firebase.ts");
@@ -11,7 +11,7 @@ describe("App", () => {
   it("should render root", async () => {
     const app = await act(async () =>
       render(
-        <Provider store={Store}>
+        <Provider store={store}>
           <MemoryRouter>
             <App />
           </MemoryRouter>

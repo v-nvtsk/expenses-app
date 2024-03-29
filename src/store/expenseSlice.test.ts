@@ -1,4 +1,4 @@
-import { Store } from ".";
+import { store } from ".";
 import { AuthData } from "../api/firebase";
 import firebase from "../api/firebase/firebase";
 import { signIn } from "./authSlice";
@@ -33,37 +33,37 @@ describe("expenseSlice", () => {
   jest.spyOn(firebase, "create").mockResolvedValue(testData.id);
 
   it("should be authentcated", async () => {
-    await Store.dispatch(signIn({ email: "test", password: "test" }));
+    await store.dispatch(signIn({ email: "test", password: "test" }));
     expect(firebase.signIn).toHaveBeenCalled();
-    expect(Store.getState().auth.isAuthenticated).toBeTruthy();
+    expect(store.getState().auth.isAuthenticated).toBeTruthy();
   });
 
   it("should add expense", async () => {
-    await Store.dispatch(addExpense(testData));
+    await store.dispatch(addExpense(testData));
     expect(firebase.create).toHaveBeenCalledWith("expense", testData);
-    expect(Store.getState().expenses.items).toEqual([testData]);
+    expect(store.getState().expenses.items).toEqual([testData]);
   });
 
   it("should set errorState if add expense fails", async () => {
     jest.spyOn(firebase, "create").mockResolvedValue(undefined);
-    await Store.dispatch(addExpense(testData));
-    expect(Store.getState().expenses.errorState).toEqual("Expense is not created");
+    await store.dispatch(addExpense(testData));
+    expect(store.getState().expenses.errorState).toEqual("Expense is not created");
   });
 
   it("should read all expenses", async () => {
     jest.spyOn(firebase, "read").mockResolvedValue({
       [testData.id as string]: testData,
     });
-    await Store.dispatch(readExpenses({}));
+    await store.dispatch(readExpenses({}));
     expect(firebase.read).toHaveBeenCalledWith("expense", {});
-    expect(Store.getState().expenses.items).toEqual([savedData]);
+    expect(store.getState().expenses.items).toEqual([savedData]);
   });
 
   it("should set errorState if read expenses fails", async () => {
     jest.spyOn(firebase, "read").mockImplementation(() => {
       throw new Error("error");
     });
-    await Store.dispatch(readExpenses({}));
-    expect(Store.getState().expenses.errorState).toEqual("error");
+    await store.dispatch(readExpenses({}));
+    expect(store.getState().expenses.errorState).toEqual("error");
   });
 });
