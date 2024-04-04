@@ -4,5 +4,3 @@ module.exports = {
   "*.{css,scss}": ["npm run style --", "npm run format --"],
   "*.md": "npm run format --list-different",
 };
-
-
