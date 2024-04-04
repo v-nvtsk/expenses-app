@@ -12,8 +12,6 @@ import { Settings } from "./settings";
 import { Stats } from "./stats";
 
 function App() {
-  sessionStorage.getItem("token");
-
   const authState = useSelector<StoreRootState>((state) => state.auth) as AuthState;
   const { isLoading, isAuthenticated } = authState;
   const dispatch = useDispatch<AppDispatch>();
