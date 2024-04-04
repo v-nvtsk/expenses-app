@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import firebase from "../api/firebase/firebase";
-import { Filter } from "../api/expenses-api";
+import { Filter } from "../api/expenses.types";
 
 export type Expense = {
   id: string;

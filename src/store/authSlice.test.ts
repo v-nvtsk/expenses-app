@@ -1,5 +1,5 @@
 import { store } from ".";
-import { APP_PREFIX } from "../api/expenses-api";
+import { APP_PREFIX } from "../api/expenses.types";
 import { AuthData } from "../api/firebase";
 import firebase from "../api/firebase/firebase";
 import { checkAuth, resetPassword, signIn, signOut, signUp } from "./authSlice";

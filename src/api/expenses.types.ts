@@ -23,12 +23,12 @@ export interface Filter {
   text?: string;
   categoryId?: string;
 }
-type TwithId<T> = T & { id: string };
+export type WithId<T> = T & { id: string };
 
 export interface CRUD<T> {
   create: (data: T) => Promise<string | undefined>;
   read: (filter: Partial<Filter>) => Promise<T[]>;
-  update: (data: TwithId<T>) => Promise<TwithId<T> | undefined>;
+  update: (data: WithId<T>) => Promise<WithId<T> | undefined>;
   delete: (id: string) => Promise<void>;
 }
 

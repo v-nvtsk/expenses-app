@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import firebase from "../api/firebase/firebase";
 import { AuthData } from "../api/firebase";
-import { APP_PREFIX } from "../api/expenses-api";
+import { APP_PREFIX } from "../api/expenses.types";
 
 export type AuthState = {
   isLoading: boolean;

@@ -1,5 +1,5 @@
 import { API_KEY, DB_URL } from "./config";
-import { APP_PREFIX } from "../expenses-api";
+import { APP_PREFIX } from "../expenses.types";
 import Firebase from "./firebase";
 
 export interface TodoItem {

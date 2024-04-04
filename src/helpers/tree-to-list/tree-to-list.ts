@@ -1,4 +1,4 @@
-import { Category } from "../../api/expenses-api";
+import { Category } from "../../api/expenses.types";
 
 const defaultCb = (item: Category, level: number) => ({
   ...item,

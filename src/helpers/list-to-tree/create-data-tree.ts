@@ -1,4 +1,4 @@
-import { Category } from "../../api/expenses-api";
+import { Category } from "../../api/expenses.types";
 
 export const createDataTree = (list: Partial<Category>[]) => {
   const hashTable = Object.create(null);

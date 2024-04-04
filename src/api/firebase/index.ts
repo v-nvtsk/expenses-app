@@ -1,4 +1,4 @@
-import { Filter } from "../expenses-api";
+import { Filter } from "../expenses.types";
 
 export declare type AuthData = {
   localId: string;
@@ -7,7 +7,7 @@ export declare type AuthData = {
   refreshToken: string;
 };
 
-type TypeWithId<T> = T & { id: string };
+type WithId<T> = T & { id: string };
 
 export declare type SignInRequestBody = {
   email: string;
@@ -20,7 +20,7 @@ export declare type SignUpRequestBody = SignInRequestBody;
 export interface IFirebaseCRUD<T> {
   create: (entity: string, data: T) => Promise<string | undefined>;
   read: (entity: string, filter: Partial<Filter>) => Promise<T[] | {}>;
-  update: (entity: string, data: TypeWithId<T>) => Promise<TypeWithId<T> | undefined>;
+  update: (entity: string, data: WithId<T>) => Promise<WithId<T> | undefined>;
   delete: (entity: string, id: string) => Promise<void>;
 }
 

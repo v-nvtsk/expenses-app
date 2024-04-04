@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import firebase from "../api/firebase/firebase";
-import { Category, Filter } from "../api/expenses-api";
+import { Category, Filter } from "../api/expenses.types";
 import { createDataTree } from "../helpers/list-to-tree";
 import { treeToList } from "../helpers/tree-to-list";
 

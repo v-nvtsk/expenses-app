@@ -1,4 +1,4 @@
-import { Category } from "../../api/expenses-api";
+import { Category } from "../../api/expenses.types";
 import { createDataTree } from "./index";
 
 describe("createDataTree", () => {

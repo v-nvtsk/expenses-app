@@ -1,7 +1,6 @@
-import React from "react";
-import { Expense } from "../../store/expenseSlice";
+import { Category } from "../../api/expenses.types";
 import { formatMoney } from "../../helpers/format-number/format-number";
-import { Category } from "../../api/expenses-api";
+import { Expense } from "../../store/expenseSlice";
 
 type TableData = {
   categories: Category[];

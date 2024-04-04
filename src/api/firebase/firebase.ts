@@ -1,8 +1,6 @@
 import { AuthData, IFirebase, SignInRequestBody, SignUpRequestBody } from ".";
-import { type Filter, APP_PREFIX } from "../expenses-api";
+import { APP_PREFIX, WithId, type Filter } from "../expenses.types";
 import { API_KEY, DB_URL } from "./config";
-
-type TypeWithId<T> = T & { id: string };
 
 class Firebase<T> implements IFirebase<T> {
   private static instance: Firebase<any> | null = null;
@@ -238,7 +236,7 @@ class Firebase<T> implements IFirebase<T> {
     return allItems;
   }
 
-  async update(entity: string, item: TypeWithId<T>): Promise<TypeWithId<T> | undefined> {
+  async update(entity: string, item: WithId<T>): Promise<WithId<T> | undefined> {
     if (item.id === undefined) return undefined;
     const { id } = item;
 
@@ -255,7 +253,7 @@ class Firebase<T> implements IFirebase<T> {
       requestOptions,
     );
     const result = await response.json();
-    return result as TypeWithId<T>;
+    return result as WithId<T>;
   }
 
   async delete(entity: string, id: string): Promise<void> {
