@@ -32,3 +32,9 @@ export declare interface IFirebaseAuth {
 }
 
 export interface IFirebase<T> extends IFirebaseAuth, IFirebaseCRUD<T> {}
+
+export type FetchOptions<T> = {
+  method?: string;
+  data?: T;
+  params?: { [key: string]: number | string };
+};

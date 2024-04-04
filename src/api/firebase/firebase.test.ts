@@ -1,5 +1,5 @@
-import { API_KEY, DB_URL } from "./config";
 import { APP_PREFIX } from "../expenses.types";
+import { API_KEY, DB_URL } from "./config";
 import Firebase from "./firebase";
 
 export interface TodoItem {
@@ -50,40 +50,37 @@ describe("firebase", () => {
 
   const USER_PASSWORD = "123456";
 
+  const postOptions = (body: { [name: string]: any }) => ({
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
+
   const authFetchArgs = {
     url: `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${API_KEY}`,
-    options: {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        email: USER_PREFIX,
-        password: USER_PASSWORD,
-        returnSecureToken: true,
-      }),
-    },
+    options: postOptions({
+      email: USER_PREFIX,
+      password: USER_PASSWORD,
+      returnSecureToken: true,
+    }),
   };
 
-  const mockAuthFetch200 = jest.fn(() =>
-    Promise.resolve({
-      ok: true,
-      status: 200,
-      json: () => Promise.resolve(testAuthData),
-    }),
-  ) as jest.Mock;
+  const mockAuthFetch200 = jest.fn().mockResolvedValue({
+    ok: true,
+    status: 200,
+    json: jest.fn().mockResolvedValue(testAuthData),
+  });
 
-  const mockAuthFetch400 = jest.fn(() =>
-    Promise.resolve({
-      ok: false,
-      status: 401,
-    }),
-  ) as jest.Mock;
+  const mockAuthFetch400 = jest.fn().mockResolvedValue({
+    ok: false,
+    status: 401,
+  });
 
   beforeEach(() => {
     global.fetch = mockAuthFetch200;
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
     jest.clearAllTimers();
     jest.useRealTimers();
   });
@@ -106,15 +103,7 @@ describe("firebase", () => {
     describe("signUp", () => {
       it("should signUp new user", async () => {
         const url = `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${API_KEY}`;
-        const options = {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            email: USER_PREFIX,
-            password: USER_PASSWORD,
-            returnSecureToken: true,
-          }),
-        };
+        const options = { ...authFetchArgs.options };
 
         await fireStore.signUp(USER_PREFIX, USER_PASSWORD);
         expect(global.fetch).toHaveBeenCalled();
@@ -145,14 +134,10 @@ describe("firebase", () => {
       it("should renew auth by timer", async () => {
         jest.useFakeTimers();
         const renewUrl = `https://securetoken.googleapis.com/v1/token?key=${API_KEY}`;
-        const renewOptions = {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            refresh_token: testAuthData.refreshToken,
-            grant_type: "refresh_token",
-          }),
-        };
+        const renewOptions = postOptions({
+          refresh_token: testAuthData.refreshToken,
+          grant_type: "refresh_token",
+        });
         await fireStore.signIn(USER_PREFIX, USER_PASSWORD);
         expect(global.fetch).toHaveBeenLastCalledWith(authFetchArgs.url, authFetchArgs.options);
         expect(global.fetch).toHaveBeenCalledTimes(1);
@@ -171,9 +156,10 @@ describe("firebase", () => {
 
     it("should signOut", async () => {
       await fireStore.signOut();
+      expect.assertions(2);
       try {
         await fireStore.read(entity, {});
-        expect.assertions(1);
+        expect(true).toBe(false);
       } catch (e) {
         expect(e).toBeInstanceOf(Error);
         expect(e).toHaveProperty("message", "not authenticated");
@@ -184,14 +170,10 @@ describe("firebase", () => {
       it("should get user data if user is authenticated", async () => {
         await fireStore.signIn(USER_PREFIX, USER_PASSWORD);
         const url = `https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=${API_KEY}`;
-        const options = {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            idToken: testAuthData.idToken,
-            returnSecureToken: true,
-          }),
-        };
+        const options = postOptions({
+          idToken: testAuthData.idToken,
+          returnSecureToken: true,
+        });
         await fireStore.getUserData();
         expect(global.fetch).toHaveBeenCalled();
         expect(global.fetch).toHaveBeenCalledWith(url, options);
@@ -213,14 +195,10 @@ describe("firebase", () => {
     describe("Reset password", () => {
       it("should reset password if user exists", async () => {
         const url = `https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=${API_KEY}`;
-        const options = {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            email: USER_PREFIX,
-            requestType: "PASSWORD_RESET",
-          }),
-        };
+        const options = postOptions({
+          email: USER_PREFIX,
+          requestType: "PASSWORD_RESET",
+        });
 
         await fireStore.resetPassword(USER_PREFIX);
         expect(global.fetch).toHaveBeenLastCalledWith(url, options);
@@ -240,46 +218,42 @@ describe("firebase", () => {
       return result;
     });
 
-    afterEach(() => {
-      jest.clearAllMocks();
-    });
-
     describe("should reject if not authenticated", () => {
       beforeEach(async () => {
         await fireStore.signOut();
       });
 
       it("create", async () => {
+        expect.assertions(2);
         try {
           await fireStore.create(entity, testTodoItem);
-          expect.assertions(1);
         } catch (e) {
           expect(e).toBeInstanceOf(Error);
           expect(e).toHaveProperty("message", "not authenticated");
         }
       });
       it("read", async () => {
+        expect.assertions(2);
         try {
           await fireStore.read(entity, {});
-          expect.assertions(1);
         } catch (e) {
           expect(e).toBeInstanceOf(Error);
           expect(e).toHaveProperty("message", "not authenticated");
         }
       });
       it("update", async () => {
+        expect.assertions(2);
         try {
           await fireStore.update(entity, testTodoItem as UpdateTodoItem);
-          expect.assertions(1);
         } catch (e) {
           expect(e).toBeInstanceOf(Error);
           expect(e).toHaveProperty("message", "not authenticated");
         }
       });
       it("delete", async () => {
+        expect.assertions(2);
         try {
           await fireStore.delete(entity, "32423");
-          expect.assertions(1);
         } catch (e) {
           expect(e).toBeInstanceOf(Error);
           expect(e).toHaveProperty("message", "not authenticated");
@@ -288,48 +262,35 @@ describe("firebase", () => {
     });
 
     it("should create", async () => {
-      global.fetch = jest.fn(() =>
-        Promise.resolve({
-          json: () => Promise.resolve({ name: testTodoItem.id }),
-        }),
-      ) as jest.Mock;
+      global.fetch = jest.fn().mockResolvedValue({
+        ok: true,
+        status: 200,
+        json: jest.fn().mockResolvedValue({ name: testTodoItem.id }),
+      });
 
       const url = `${DB_URL}/${APP_PREFIX}/${testAuthData.localId}/${entity}.json?auth=${testAuthData.idToken}`;
-      const options = {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(testTodoItem),
-      };
+      const options = postOptions(testTodoItem);
       await fireStore.create(entity, testTodoItem);
       expect(global.fetch).toHaveBeenLastCalledWith(url, options);
     });
 
     it("should read", async () => {
-      global.fetch = mockAuthFetch200;
-      await fireStore.signIn(USER_PREFIX, USER_PASSWORD);
-      global.fetch = jest.fn(() =>
-        Promise.resolve({
-          ok: true,
-          status: 200,
-          json: () => Promise.resolve({ some_name: testTodoItem }),
-        }),
-      ) as jest.Mock;
+      global.fetch = jest.fn().mockResolvedValue({
+        ok: true,
+        status: 200,
+        json: jest.fn().mockResolvedValue({ some_name: testTodoItem }),
+      });
       await fireStore.create(entity, testTodoItem);
 
       expect(await fireStore.read(entity, {})).toMatchObject({ some_name: testTodoItem });
     });
 
     it("should request filtered by date on read", async () => {
-      global.fetch = mockAuthFetch200;
-      await fireStore.signIn(USER_PREFIX, USER_PASSWORD);
-
-      global.fetch = jest.fn(() =>
-        Promise.resolve({
-          ok: true,
-          status: 200,
-          json: () => Promise.resolve({ some_name: testTodoItem }),
-        }),
-      ) as jest.Mock;
+      global.fetch = jest.fn().mockResolvedValue({
+        ok: true,
+        status: 200,
+        json: jest.fn().mockResolvedValue({ some_name: testTodoItem }),
+      });
 
       const params: { [key: string]: any } = {
         startAt: new Date(2024, 0, 1).getTime(),
@@ -363,37 +324,9 @@ describe("firebase", () => {
     });
 
     it("should return empty object on error", async () => {
-      global.fetch = mockAuthFetch200;
-      await fireStore.signIn(USER_PREFIX, USER_PASSWORD);
-      const testTodoItem1: TodoItem = {
-        description: "",
-        taskTitle: "filtered test",
-        status: false,
-        tags: "tag1, tag2",
-        creationDate: new Date(2024, 2, 1).valueOf(),
-        startDate: new Date("2024-03-10T02:25:57.402Z").valueOf(),
-        endDate: new Date("2024-03-10T02:25:57.402Z").valueOf(),
-      };
-      const testTodoItem2: TodoItem = {
-        description: "",
-        taskTitle: "test",
-        status: false,
-        tags: "tag1, tag2",
-        creationDate: new Date(2023, 2, 2).valueOf(),
-        startDate: new Date("2024-03-10T00:00:00.000Z").valueOf(),
-        endDate: new Date("2024-03-10T02:25:57.402Z").valueOf(),
-      };
-      global.fetch = jest.fn(() =>
-        Promise.resolve({
-          status: 401,
-          json: () =>
-            Promise.resolve({
-              testTodoItem_id1: testTodoItem1,
-              testTodoItem_id2: testTodoItem2,
-            }),
-        }),
-      ) as jest.Mock;
-
+      global.fetch = jest.fn().mockResolvedValue({
+        status: 404,
+      });
       expect(
         await fireStore.read(entity, {
           dateFrom: new Date(2025, 2, 1).valueOf(),
@@ -403,13 +336,9 @@ describe("firebase", () => {
     });
 
     it("should update", async () => {
-      global.fetch = mockAuthFetch200;
-      await fireStore.signIn(USER_PREFIX, USER_PASSWORD);
-      global.fetch = jest.fn(() =>
-        Promise.resolve({
-          json: () => Promise.resolve({ some_name: testTodoItem }),
-        }),
-      ) as jest.Mock;
+      global.fetch = jest.fn().mockResolvedValue({
+        json: jest.fn().mockResolvedValue({ some_name: testTodoItem }),
+      });
 
       fireStore.create(entity, testTodoItem);
 
@@ -427,19 +356,13 @@ describe("firebase", () => {
     });
 
     it("should not update without id", async () => {
-      global.fetch = mockAuthFetch200;
-      await fireStore.signIn(USER_PREFIX, USER_PASSWORD);
       expect(await fireStore.update(entity, {} as UpdateTodoItem)).toBe(undefined);
     });
 
     it("should delete", async () => {
-      global.fetch = mockAuthFetch200;
-      await fireStore.signIn(USER_PREFIX, USER_PASSWORD);
-      global.fetch = jest.fn(() =>
-        Promise.resolve({
-          json: () => Promise.resolve({ some_name: testTodoItem }),
-        }),
-      ) as jest.Mock;
+      global.fetch = jest.fn().mockResolvedValue({
+        json: jest.fn().mockResolvedValue({ some_name: testTodoItem }),
+      });
 
       const url = `${DB_URL}/${APP_PREFIX}/${testAuthData.localId}/${entity}/${testTodoItem.id}.json?auth=${testAuthData.idToken}`;
       const updateOptions = {
