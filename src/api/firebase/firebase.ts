@@ -1,6 +1,12 @@
-import { AuthData, IFirebase, SignInRequestBody, SignUpRequestBody } from ".";
+import { AuthData, AuthRequestBody, IFirebase } from ".";
 import { APP_PREFIX, WithId, type Filter } from "../expenses.types";
 import { API_KEY, DB_URL } from "./config";
+
+type FetchOptions<T> = {
+  method?: string;
+  data?: T;
+  params?: { [key: string]: number | string };
+};
 
 class Firebase<T> implements IFirebase<T> {
   private static instance: Firebase<any> | null = null;
@@ -27,78 +33,48 @@ class Firebase<T> implements IFirebase<T> {
     return null;
   }
 
+  private async auth(action: "signin" | "signup", email: string, password: string): Promise<AuthData | null> {
+    const body: AuthRequestBody = {
+      email,
+      password,
+      returnSecureToken: true,
+    };
+    const requestOptions = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    };
+
+    const url = `https://identitytoolkit.googleapis.com/v1/accounts:${
+      action === "signin" ? "signInWithPassword" : "signUp"
+    }?key=${API_KEY}`;
+
+    const response = await fetch(url, requestOptions);
+    if (response.ok) {
+      const authData = await response.json();
+      return this.setAuthData({ ...authData });
+    }
+    return null;
+  }
+
   /**
-   * Sign in the user using the provided email and password.
-   *
    * https://firebase.google.com/docs/reference/rest/auth?hl=en#section-sign-in-email-password
-   *
-   * @param {string} email - The user's email address
-   * @param {string} password - The user's password
-   * @return {Promise<void>} A promise that resolves when the sign-in operation is complete
    */
   public async signIn(email: string, password: string): Promise<AuthData | null> {
-    const body: SignInRequestBody = {
-      email,
-      password,
-      returnSecureToken: true,
-    };
-    const requestOptions = {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
-    };
-
-    const response = await fetch(
-      `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${API_KEY}`,
-      requestOptions,
-    );
-    if (response.status === 200) {
-      const authData = await response.json();
-      return this.setAuthData({ ...authData });
-    }
-    return null;
+    const result = await this.auth("signin", email, password);
+    return result;
   }
 
   /**
-   * Sign up the user using the provided email and password.
-   *
    * https://firebase.google.com/docs/reference/rest/auth?hl=en#section-create-email-password
-   *
-   * @param {string} email - the email for signing up
-   * @param {string} password - the password for signing up
-   * @return {Promise<void>} a promise that resolves when the sign up process is complete
    */
   public async signUp(email: string, password: string): Promise<AuthData | null> {
-    const body: SignUpRequestBody = {
-      email,
-      password,
-      returnSecureToken: true,
-    };
-    const requestOptions = {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
-    };
-
-    const response = await fetch(
-      `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${API_KEY}`,
-      requestOptions,
-    );
-
-    if (response.status === 200) {
-      const authData = await response.json();
-      return this.setAuthData({ ...authData });
-    }
-    return null;
+    const result = await this.auth("signup", email, password);
+    return result;
   }
 
   /**
-   * Renews the authentication using the provided refresh token.
-   *
    * https://firebase.google.com/docs/reference/rest/auth?hl=en#section-refresh-token
-   *
-   * @param {string} refresh_token - the refresh token used to renew the authentication
-   * @return {Promise<void>} a Promise that resolves when the authentication is renewed
    */
   public async renewAuth(refresh_token: string): Promise<AuthData | null> {
     const requestOptions = {
@@ -111,7 +87,7 @@ class Firebase<T> implements IFirebase<T> {
     };
 
     const response = await fetch(`https://securetoken.googleapis.com/v1/token?key=${API_KEY}`, requestOptions);
-    if (response.status === 200) {
+    if (response.ok) {
       const authData = await response.json();
       this.authData.expiresIn = authData.expires_in;
       this.authData.refreshToken = authData.refresh_token;
@@ -141,24 +117,23 @@ class Firebase<T> implements IFirebase<T> {
    * @return {Promise<void>} A Promise that resolves when the user data is successfully retrieved.
    */
   public async getUserData(): Promise<{ [key: string]: string } | null> {
-    if (this.authData.idToken) {
-      const requestOptions = {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          idToken: this.authData.idToken,
-          returnSecureToken: true,
-        }),
-      };
+    if (!this.authData.idToken) return null;
+    const requestOptions = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        idToken: this.authData.idToken,
+        returnSecureToken: true,
+      }),
+    };
 
-      const response = await fetch(
-        `https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=${API_KEY}`,
-        requestOptions,
-      );
-      if (response.status === 200) {
-        const user = await response.json();
-        return user;
-      }
+    const response = await fetch(
+      `https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=${API_KEY}`,
+      requestOptions,
+    );
+    if (response.ok) {
+      const user = await response.json();
+      return user;
     }
     return null;
   }
@@ -184,90 +159,72 @@ class Firebase<T> implements IFirebase<T> {
       requestOptions,
     );
 
-    if (response.status === 200) {
+    if (response.ok) {
       const result = await response.json();
       return result.email;
     }
     return null;
   }
 
-  async create(entity: string, data: T): Promise<string | undefined> {
-    const raw = JSON.stringify(data);
-
+  private async fetchEntity(entity: string, options?: FetchOptions<T>, id?: string) {
     if (!this.authData.idToken || !this.authData.localId) return Promise.reject(new Error("not authenticated"));
 
-    const requestOptions = {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: raw,
-    };
-
-    const response = await fetch(
-      `${DB_URL}/${this.appPrefix}/${this.authData.localId}/${entity}.json?auth=${this.authData.idToken}`,
-      requestOptions,
-    );
-    const result = await response.json();
-    return result.name;
-  }
-
-  async read(entity: string, filter: Partial<Filter>): Promise<any[] | {}> {
-    const requestOptions = {
-      method: "GET",
-    };
-
-    if (!this.authData.idToken || !this.authData.localId) return Promise.reject(new Error("not authenticated"));
+    let requestOptions = {};
+    if (options) {
+      const raw = JSON.stringify(options.data);
+      requestOptions = {
+        method: options.method || "GET",
+        headers: { "Content-Type": "application/json" },
+        body: raw,
+      };
+    }
 
     const params: { [key: string]: any } = {
       auth: this.authData.idToken,
+      ...options?.params,
     };
+    const searchparams = new URLSearchParams(params).toString();
+    const url = id
+      ? `${DB_URL}/${this.appPrefix}/${this.authData.localId}/${entity}/${id}.json?${searchparams}`
+      : `${DB_URL}/${this.appPrefix}/${this.authData.localId}/${entity}.json?${searchparams}`;
+    let response = await fetch(url, requestOptions);
+    if (!response.ok && response.status === 401) {
+      if (await this.renewAuth(this.authData.refreshToken)) {
+        response = await fetch(url, requestOptions);
+      }
+    }
+    if (response.ok) return response.json();
+    return undefined;
+  }
+
+  async create(entity: string, data: T): Promise<string | undefined> {
+    const result = await this.fetchEntity(entity, { data, method: "POST" });
+    if (result) return result.name;
+
+    return undefined;
+  }
+
+  async read(entity: string, filter: Partial<Filter>): Promise<any[] | {}> {
+    const params: { [key: string]: any } = {};
     if (filter.dateFrom) params.startAt = filter.dateFrom;
     if (filter.dateTo) params.endAt = filter.dateTo;
     if (filter.dateFrom || filter.dateTo) params.orderBy = '"creationDate"';
+    const allItems = await this.fetchEntity(entity, { method: "GET", params });
 
-    const searchparams = new URLSearchParams(params);
-
-    const response = await fetch(
-      `${DB_URL}/${this.appPrefix}/${this.authData.localId}/${entity}.json?${searchparams.toString()}`,
-      requestOptions,
-    );
-    if (response.status !== 200) return [];
-
-    const allItems = await response.json();
-    return allItems;
+    if (allItems) return allItems;
+    return {};
   }
 
   async update(entity: string, item: WithId<T>): Promise<WithId<T> | undefined> {
-    if (item.id === undefined) return undefined;
+    if (item?.id === undefined) return undefined;
     const { id } = item;
 
-    if (!this.authData.idToken || !this.authData.localId) return Promise.reject(new Error("not authenticated"));
-
-    const requestOptions = {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(item),
-    };
-
-    const response = await fetch(
-      `${DB_URL}/${this.appPrefix}/${this.authData.localId}/${entity}/${id}.json?auth=${this.authData.idToken}`,
-      requestOptions,
-    );
-    const result = await response.json();
+    const result = await this.fetchEntity(entity, { method: "PATCH", data: item }, id);
     return result as WithId<T>;
   }
 
   async delete(entity: string, id: string): Promise<void> {
-    const requestOptions = {
-      method: "DELETE",
-    };
-
-    if (!this.authData.idToken || !this.authData.localId) return Promise.reject(new Error("not authenticated"));
-
-    await fetch(
-      `${DB_URL}/${this.appPrefix}/${this.authData.localId}/${entity}/${id}.json?auth=${this.authData.idToken}`,
-      requestOptions,
-    );
-    return undefined;
+    await this.fetchEntity(entity, { method: "DELETE" }, id);
   }
 }
 

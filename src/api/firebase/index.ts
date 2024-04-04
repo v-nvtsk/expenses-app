@@ -9,13 +9,11 @@ export declare type AuthData = {
 
 type WithId<T> = T & { id: string };
 
-export declare type SignInRequestBody = {
+export declare type AuthRequestBody = {
   email: string;
   password: string;
   returnSecureToken: true;
 };
-
-export declare type SignUpRequestBody = SignInRequestBody;
 
 export interface IFirebaseCRUD<T> {
   create: (entity: string, data: T) => Promise<string | undefined>;

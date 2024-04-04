@@ -65,6 +65,7 @@ describe("firebase", () => {
 
   const mockAuthFetch200 = jest.fn(() =>
     Promise.resolve({
+      ok: true,
       status: 200,
       json: () => Promise.resolve(testAuthData),
     }),
@@ -72,7 +73,8 @@ describe("firebase", () => {
 
   const mockAuthFetch400 = jest.fn(() =>
     Promise.resolve({
-      status: 400,
+      ok: false,
+      status: 401,
     }),
   ) as jest.Mock;
 
@@ -307,6 +309,7 @@ describe("firebase", () => {
       await fireStore.signIn(USER_PREFIX, USER_PASSWORD);
       global.fetch = jest.fn(() =>
         Promise.resolve({
+          ok: true,
           status: 200,
           json: () => Promise.resolve({ some_name: testTodoItem }),
         }),
@@ -322,6 +325,7 @@ describe("firebase", () => {
 
       global.fetch = jest.fn(() =>
         Promise.resolve({
+          ok: true,
           status: 200,
           json: () => Promise.resolve({ some_name: testTodoItem }),
         }),
@@ -340,7 +344,7 @@ describe("firebase", () => {
       };
 
       await fireStore.read(entity, { dateFrom: new Date(2024, 0, 1).getTime() });
-      expect(global.fetch).toHaveBeenLastCalledWith(url, getOptions);
+      expect(global.fetch).toHaveBeenLastCalledWith(url, expect.objectContaining(getOptions));
 
       const params2: { [key: string]: any } = {
         startAt: new Date(2024, 0, 1).getTime(),
@@ -355,10 +359,10 @@ describe("firebase", () => {
         dateFrom: new Date(2024, 0, 1).getTime(),
         dateTo: new Date(2025, 0, 1).getTime(),
       });
-      expect(global.fetch).toHaveBeenLastCalledWith(url2, getOptions);
+      expect(global.fetch).toHaveBeenLastCalledWith(url2, expect.objectContaining(getOptions));
     });
 
-    it("should return empty array on error", async () => {
+    it("should return empty object on error", async () => {
       global.fetch = mockAuthFetch200;
       await fireStore.signIn(USER_PREFIX, USER_PASSWORD);
       const testTodoItem1: TodoItem = {
@@ -395,7 +399,7 @@ describe("firebase", () => {
           dateFrom: new Date(2025, 2, 1).valueOf(),
           dateTo: new Date(2026, 4, 1).valueOf(),
         }),
-      ).toEqual([]);
+      ).toEqual({});
     });
 
     it("should update", async () => {
@@ -443,7 +447,7 @@ describe("firebase", () => {
       };
 
       await fireStore.delete(entity, testTodoItem.id!);
-      expect(global.fetch).toHaveBeenLastCalledWith(url, updateOptions);
+      expect(global.fetch).toHaveBeenLastCalledWith(url, expect.objectContaining(updateOptions));
     });
   });
 });
