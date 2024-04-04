@@ -1,20 +1,18 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { RenderResult, fireEvent, render, screen } from "@testing-library/react";
 import { AuthForm } from "./auth-form";
 
 describe("AuthForm", () => {
   const onSubmitMock = jest.fn();
   const onChangeFormMock = jest.fn();
 
-  afterEach(() => {
-    jest.clearAllMocks();
-  });
+  let component: RenderResult<typeof import("@testing-library/dom/types/queries"), HTMLElement, HTMLElement>;
 
   describe("SignInForm", () => {
-    test("renders the sign-in form", () => {
-      const component = render(
-        <AuthForm activeForm={"signin"} onSubmit={onSubmitMock} onChangeForm={onChangeFormMock} />,
-      );
+    beforeEach(() => {
+      component = render(<AuthForm activeForm={"signin"} onSubmit={onSubmitMock} onChangeForm={onChangeFormMock} />);
+    });
 
+    test("renders the sign-in form", () => {
       expect(
         screen.getByRole("heading", {
           name: /sign in/i,
@@ -32,15 +30,9 @@ describe("AuthForm", () => {
       expect(screen.getByText("Sign up")).toBeInTheDocument();
 
       expect(screen.getByText("Forgot password?")).toBeInTheDocument();
-
-      component.unmount();
     });
 
     test("calls onSubmit with email and password on form submission", () => {
-      const component = render(
-        <AuthForm activeForm={"signin"} onSubmit={onSubmitMock} onChangeForm={onChangeFormMock} />,
-      );
-
       const emailInput = screen.getByRole("textbox", { name: /email/i });
       const passwordInput = screen.getByPlaceholderText("Password");
       const button = screen.getByRole("button");
@@ -51,14 +43,9 @@ describe("AuthForm", () => {
       fireEvent.click(button);
 
       expect(onSubmitMock).toHaveBeenCalledWith("test@example.com", "password123");
-      component.unmount();
     });
 
     test("not calls onSubmit with wrong email and password on form submission", () => {
-      const component = render(
-        <AuthForm activeForm={"signin"} onSubmit={onSubmitMock} onChangeForm={onChangeFormMock} />,
-      );
-
       const emailInput = screen.getByRole("textbox", { name: /email/i });
       const passwordInput = screen.getByPlaceholderText("Password");
       const button = screen.getByRole("button");
@@ -69,11 +56,10 @@ describe("AuthForm", () => {
       fireEvent.click(button);
 
       expect(onSubmitMock).not.toHaveBeenCalledWith("test@example.com", "password123");
-      component.unmount();
     });
 
     it("should set error state on failure", () => {
-      const component = render(
+      component.rerender(
         <AuthForm
           activeForm={"signin"}
           onSubmit={onSubmitMock}
@@ -84,16 +70,15 @@ describe("AuthForm", () => {
 
       const errorStateField = screen.getByText("Error state");
       expect(errorStateField).toBeInTheDocument();
-      component.unmount();
     });
   });
 
   describe("SignUpForm", () => {
-    test("renders the sign-up form", () => {
-      const component = render(
-        <AuthForm activeForm={"signup"} onSubmit={onSubmitMock} onChangeForm={onChangeFormMock} />,
-      );
+    beforeEach(() => {
+      component = render(<AuthForm activeForm={"signup"} onSubmit={onSubmitMock} onChangeForm={onChangeFormMock} />);
+    });
 
+    test("renders the sign-up form", () => {
       expect(
         screen.getByRole("heading", {
           name: /sign up/i,
@@ -109,16 +94,13 @@ describe("AuthForm", () => {
       expect(screen.getByRole("button").innerHTML).toBe("Sign up");
 
       expect(screen.getByText("Forgot password?")).toBeInTheDocument();
-
-      component.unmount();
     });
   });
 
   describe("change form", () => {
     test("calls onChangeForm with new form path", () => {
-      const component = render(
-        <AuthForm activeForm={"signin"} onSubmit={onSubmitMock} onChangeForm={onChangeFormMock} />,
-      );
+      component.unmount();
+      component = render(<AuthForm activeForm={"signin"} onSubmit={onSubmitMock} onChangeForm={onChangeFormMock} />);
 
       const signUpBtn = screen.getByText("Sign up");
       expect(signUpBtn).toBeInTheDocument();
@@ -126,7 +108,6 @@ describe("AuthForm", () => {
       fireEvent.click(signUpBtn);
 
       expect(onChangeFormMock).toHaveBeenCalledWith("/auth/signup");
-      component.unmount();
     });
   });
 });

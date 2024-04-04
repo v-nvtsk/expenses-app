@@ -21,7 +21,6 @@ describe("Auth", () => {
   jest.spyOn(firebase, "resetPassword").mockResolvedValue("test_email");
 
   afterEach(async () => {
-    jest.clearAllMocks();
     localStorage.clear();
     await store.dispatch(signOut());
   });

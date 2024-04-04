@@ -22,7 +22,6 @@ describe("FilterYear", () => {
     expect(inputYear).toBeInTheDocument();
     expect(btnSubmit).toBeInTheDocument();
     expect(component.container).toBeInTheDocument();
-    component.unmount();
   });
 
   it("should submit on button press", async () => {
@@ -50,6 +49,5 @@ describe("FilterYear", () => {
       dateFrom: new Date(2022, 0).getTime(),
       dateTo: new Date(2023, 0).getTime() - 1,
     });
-    component.unmount();
   });
 });

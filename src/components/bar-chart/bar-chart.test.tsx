@@ -12,7 +12,6 @@ describe("BarChart", () => {
     const component = await act(async () => render(<BarChart data={{ categories: [], expenses: [] }} />));
     expect(component.container).toBeInTheDocument();
     expect(component.container.innerHTML).toEqual("");
-    component.unmount();
   });
 
   it("should render if data present", () => {
@@ -72,6 +71,5 @@ describe("BarChart", () => {
       height: "400px",
       data: chartData,
     });
-    component.unmount();
   });
 });

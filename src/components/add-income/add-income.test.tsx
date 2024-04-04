@@ -1,4 +1,4 @@
-import { act, fireEvent, render, within } from "@testing-library/react";
+import { RenderResult, act, fireEvent, render, within } from "@testing-library/react";
 import { Provider } from "react-redux";
 import { AddIncome } from ".";
 import firebase from "../../api/firebase/firebase";
@@ -7,12 +7,10 @@ import { store } from "../../store";
 jest.mock("../../api/firebase/firebase.ts");
 
 describe("AddIncome", () => {
-  afterEach(() => {
-    jest.clearAllMocks();
-  });
+  let component: RenderResult<typeof import("@testing-library/dom/types/queries"), HTMLElement, HTMLElement>;
 
   it("should render ", async () => {
-    const component = await act(async () =>
+    component = await act(async () =>
       render(
         <Provider store={store}>
           <AddIncome />
@@ -32,7 +30,6 @@ describe("AddIncome", () => {
     expect(inputName).toBeInTheDocument();
     expect(inputAmount).toBeInTheDocument();
     expect(button).toBeInTheDocument();
-    component.unmount();
   });
 
   it("should submit on button press", async () => {
@@ -42,7 +39,7 @@ describe("AddIncome", () => {
       parentId: "",
     });
 
-    const component = await act(async () =>
+    component = await act(async () =>
       render(
         <Provider store={store}>
           <AddIncome />
@@ -71,6 +68,5 @@ describe("AddIncome", () => {
     const form = component.container.querySelector("form") as HTMLFormElement;
     await fireEvent.submit(form);
     expect(firebase.create).toHaveBeenLastCalledWith("income", testData);
-    component.unmount();
   });
 });

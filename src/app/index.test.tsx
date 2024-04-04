@@ -8,9 +8,12 @@ import App from "./app";
 jest.mock("../api/firebase/firebase.ts");
 
 describe("App", () => {
-  localStorage.setItem(`${APP_PREFIX}@token`, "test_token");
+  beforeEach(async () => {
+    localStorage.setItem(`${APP_PREFIX}@token`, "test_token");
+  });
+
   it("should render root", async () => {
-    const app = await act(async () =>
+    await act(async () =>
       render(
         <Provider store={store}>
           <MemoryRouter>
@@ -33,7 +36,5 @@ describe("App", () => {
       name: /sign in/i,
     });
     expect(list).toContainElement(linkSignIn);
-
-    app.unmount();
   });
 });

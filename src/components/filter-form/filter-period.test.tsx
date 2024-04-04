@@ -24,7 +24,6 @@ describe("FilterWeek", () => {
     expect(inputDateTo).toBeInTheDocument();
     expect(btnSubmit).toBeInTheDocument();
     expect(component.container).toBeInTheDocument();
-    component.unmount();
   });
 
   it("should submit on button press", async () => {
@@ -54,7 +53,6 @@ describe("FilterWeek", () => {
       dateFrom: new Date("2022-01-01").getTime(),
       dateTo: new Date("2022-01-10").getTime(),
     });
-    component.unmount();
   });
 
   it("should submit default filter on clear field", async () => {
@@ -84,7 +82,6 @@ describe("FilterWeek", () => {
       dateFrom: null,
       dateTo: null,
     });
-    component.unmount();
   });
 
   it("should swap dateFrom and dateTo if dateFrom > dateTo", async () => {
@@ -114,6 +111,5 @@ describe("FilterWeek", () => {
       dateFrom: new Date("2022-01-01").getTime(),
       dateTo: new Date("2022-01-10").getTime(),
     });
-    component.unmount();
   });
 });

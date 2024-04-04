@@ -24,12 +24,10 @@ describe("Header", () => {
     expect(inList.queryByRole("link", { name: /sign in/i })).toBeInTheDocument();
     expect(inList.queryByRole("link", { name: /sign up/i })).toBeInTheDocument();
     expect(inList.queryByRole("link", { name: /sign out/i })).not.toBeInTheDocument();
-
-    component.unmount();
   });
 
   it("should re-render Header on authState props change", () => {
-    const component = render(
+    render(
       <BrowserRouter>
         <Header isAuthenticated={true} onSignOut={mockSignOut} />
       </BrowserRouter>,
@@ -41,17 +39,15 @@ describe("Header", () => {
 
     const header = screen.queryByRole("banner");
     expect(header).toBeInTheDocument();
-    component.unmount();
   });
 
   it("should handle sign out", async () => {
-    const component = render(
+    render(
       <BrowserRouter>
         <Header isAuthenticated={true} onSignOut={mockSignOut} />
       </BrowserRouter>,
     );
     await userEvent.click(screen.getByRole("link", { name: /sign out/i }));
     expect(mockSignOut).toHaveBeenCalled();
-    component.unmount();
   });
 });

@@ -1,4 +1,4 @@
-import { act, render, waitFor } from "@testing-library/react";
+import { RenderResult, act, render, waitFor } from "@testing-library/react";
 import { Provider } from "react-redux";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import firebase from "../../api/firebase/firebase";
@@ -6,23 +6,22 @@ import { AuthForm } from "../../components/auth-form";
 import { store } from "../../store";
 import { Auth } from "./auth";
 
-const MockAuthFrom = jest.fn();
+const MockAuthForm = jest.fn();
 
 jest.mock("../../api/firebase/firebase");
 
 describe("Calendar page", () => {
   beforeEach(() => {
     jest.mock("../../components/auth-form", () => ({
-      AuthForm: (props: any) => MockAuthFrom(props),
+      AuthForm: (props: any) => MockAuthForm(props),
     }));
+    MockAuthForm.mockImplementation((props: any) => <AuthForm {...props} />);
   });
 
-  afterEach(() => {
-    jest.clearAllMocks();
-  });
+  let component: RenderResult<typeof import("@testing-library/dom/types/queries"), HTMLElement, HTMLElement>;
 
   it("should render page with signin form", async () => {
-    const component = await act(async () =>
+    component = await act(async () =>
       render(
         <Provider store={store}>
           <MemoryRouter initialEntries={["/signin"]}>
@@ -45,14 +44,12 @@ describe("Calendar page", () => {
     );
     expect(component.container).toBeInTheDocument();
     waitFor(() => {
-      expect(MockAuthFrom).toHaveBeenCalledWith(expect.objectContaining({ activeForm: "signin" }));
+      expect(MockAuthForm).toHaveBeenCalledWith(expect.objectContaining({ activeForm: "signin" }));
     });
-
-    component.unmount();
   });
 
   it("should render page with signup form", async () => {
-    const component = await act(async () =>
+    component = await act(async () =>
       render(
         <Provider store={store}>
           <MemoryRouter initialEntries={["/signup"]}>
@@ -75,14 +72,12 @@ describe("Calendar page", () => {
     );
     expect(component.container).toBeInTheDocument();
     waitFor(() => {
-      expect(MockAuthFrom).toHaveBeenCalledWith(expect.objectContaining({ activeForm: "signup" }));
+      expect(MockAuthForm).toHaveBeenCalledWith(expect.objectContaining({ activeForm: "signup" }));
     });
-
-    component.unmount();
   });
 
   it("should render page with recover password form", async () => {
-    const component = await act(async () =>
+    await act(async () =>
       render(
         <Provider store={store}>
           <MemoryRouter initialEntries={["/recover"]}>
@@ -97,14 +92,12 @@ describe("Calendar page", () => {
       ),
     );
     waitFor(() => {
-      expect(MockAuthFrom).toHaveBeenCalledWith(expect.objectContaining({ activeForm: "recover" }));
+      expect(MockAuthForm).toHaveBeenCalledWith(expect.objectContaining({ activeForm: "recover" }));
     });
-    component.unmount();
   });
 
-  it.skip("should submit auth data", async () => {
-    MockAuthFrom.mockImplementation((props: any) => <AuthForm {...props} />);
-    const component = await act(async () =>
+  it("should submit auth data", async () => {
+    component = await act(async () =>
       render(
         <Provider store={store}>
           <MemoryRouter initialEntries={["/signin"]}>
@@ -119,31 +112,29 @@ describe("Calendar page", () => {
       ),
     );
 
-    waitFor(() => {
+    waitFor(async () => {
       expect(component.container).toBeInTheDocument();
+
+      const credentials = {
+        email: "test@test.test",
+        password: "123456",
+      };
+
+      const emailInput = component.getByLabelText(/email/i) as HTMLInputElement;
+      const passwordInput = component.getByLabelText(/password/i) as HTMLInputElement;
+
+      emailInput.value = credentials.email;
+      passwordInput.value = credentials.password;
+
+      const btn = component.getByRole("button", { name: /sign in/i });
+      expect(btn).toBeInTheDocument();
+
+      jest.spyOn(firebase, "signIn").mockResolvedValue(null);
+      btn.click();
+
+      await waitFor(() => {
+        expect(firebase.signIn).toHaveBeenCalledWith(credentials.email, credentials.password);
+      });
     });
-
-    const credentials = {
-      email: "test@test.test",
-      password: "123456",
-    };
-
-    const emailInput = component.getByLabelText(/email/i) as HTMLInputElement;
-    const passwordInput = component.getByLabelText(/password/i) as HTMLInputElement;
-
-    emailInput.value = credentials.email;
-    passwordInput.value = credentials.password;
-
-    const btn = component.getByRole("button", { name: /sign in/i });
-    expect(btn).toBeInTheDocument();
-
-    jest.spyOn(firebase, "signIn").mockResolvedValue(null);
-    btn.click();
-
-    await waitFor(() => {
-      expect(firebase.signIn).toHaveBeenCalledWith(credentials.email, credentials.password);
-    });
-
-    component.unmount();
   });
 });

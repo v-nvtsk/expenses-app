@@ -1,12 +1,14 @@
-import { act, render } from "@testing-library/react";
+import { RenderResult, act, render } from "@testing-library/react";
 import { Provider } from "react-redux";
 import { MemoryRouter } from "react-router-dom";
 import { store } from "../../store";
 import { Stats } from "./stats";
 
 describe("Expenses page", () => {
+  let component: RenderResult<typeof import("@testing-library/dom/types/queries"), HTMLElement, HTMLElement>;
+
   it("should render", async () => {
-    const component = await act(async () =>
+    component = await act(async () =>
       render(
         <Provider store={store}>
           <MemoryRouter>
@@ -17,6 +19,5 @@ describe("Expenses page", () => {
     );
 
     expect(component.container).toBeInTheDocument();
-    component.unmount();
   });
 });

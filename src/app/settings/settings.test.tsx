@@ -14,6 +14,5 @@ describe("Settings page", () => {
     );
 
     expect(component.container).toBeInTheDocument();
-    component.unmount();
   });
 });

@@ -1,4 +1,4 @@
-import { act, fireEvent, render, within } from "@testing-library/react";
+import { RenderResult, act, fireEvent, render, within } from "@testing-library/react";
 import { Provider } from "react-redux";
 import { AddExpenses } from ".";
 import firebase from "../../api/firebase/firebase";
@@ -7,12 +7,10 @@ import { store } from "../../store";
 jest.mock("../../api/firebase/firebase.ts");
 
 describe("AddExpenses", () => {
-  afterEach(() => {
-    jest.clearAllMocks();
-  });
+  let component: RenderResult<typeof import("@testing-library/dom/types/queries"), HTMLElement, HTMLElement>;
 
   it("should render ", async () => {
-    const component = await act(async () =>
+    component = await act(async () =>
       render(
         <Provider store={store}>
           <AddExpenses />
@@ -33,7 +31,6 @@ describe("AddExpenses", () => {
     expect(inputAmount).toBeInTheDocument();
     expect(categorySelect).toBeInTheDocument();
     expect(button).toBeInTheDocument();
-    component.unmount();
   });
 
   it("should preload categories", async () => {
@@ -43,7 +40,7 @@ describe("AddExpenses", () => {
         parentId: "",
       },
     });
-    const component = await act(async () =>
+    component = await act(async () =>
       render(
         <Provider store={store}>
           <AddExpenses />
@@ -55,8 +52,6 @@ describe("AddExpenses", () => {
     const categorySelect = within(group).getByRole("listbox", { name: /select category\*/i });
 
     expect(categorySelect.querySelectorAll("option").length).toBe(2);
-
-    component.unmount();
   });
 
   it("should submit on button press", async () => {
@@ -66,7 +61,7 @@ describe("AddExpenses", () => {
       parentId: "",
     });
 
-    const component = await act(async () =>
+    component = await act(async () =>
       render(
         <Provider store={store}>
           <AddExpenses />
@@ -98,6 +93,5 @@ describe("AddExpenses", () => {
     const form = component.container.querySelector("form") as HTMLFormElement;
     await fireEvent.submit(form);
     expect(firebase.create).toHaveBeenLastCalledWith("expense", testData);
-    component.unmount();
   });
 });

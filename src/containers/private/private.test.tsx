@@ -15,11 +15,10 @@ describe("Private component", () => {
     );
     expect(component.container).toBeInTheDocument();
     expect(screen.getByText("Protected")).toBeInTheDocument();
-    component.unmount();
   });
 
   it("should redirect", () => {
-    const component = render(
+    render(
       <BrowserRouter>
         <Private isAuthenticated={false}>
           <ProtectedComponent />
@@ -28,6 +27,5 @@ describe("Private component", () => {
     );
 
     expect(screen.queryByText("Protected")).not.toBeInTheDocument();
-    component.unmount();
   });
 });

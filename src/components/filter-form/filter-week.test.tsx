@@ -23,7 +23,6 @@ describe("FilterWeek", () => {
     expect(inputWeek).toBeInTheDocument();
     expect(btnSubmit).toBeInTheDocument();
     expect(component.container).toBeInTheDocument();
-    component.unmount();
   });
 
   it("should submit on button press", async () => {
@@ -51,7 +50,6 @@ describe("FilterWeek", () => {
       dateFrom: new Date(2022, 0, 3).getTime(),
       dateTo: new Date(2022, 0, 10).getTime() - 1,
     });
-    component.unmount();
   });
 
   it("should submit default filter on clear field", async () => {
@@ -75,6 +73,5 @@ describe("FilterWeek", () => {
 
     await btnSubmit.click();
     expect(mockOnChange).toHaveBeenCalledWith(createDefaultFilter("week"));
-    component.unmount();
   });
 });

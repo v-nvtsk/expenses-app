@@ -28,7 +28,6 @@ describe("FilterMonth", () => {
     jest.getRealSystemTime();
     expect(btnSubmit).toBeInTheDocument();
     expect(component.container).toBeInTheDocument();
-    component.unmount();
   });
 
   it("should submit on button press", async () => {
@@ -56,7 +55,6 @@ describe("FilterMonth", () => {
       dateFrom: new Date(2022, 0, 1).getTime(),
       dateTo: new Date(2022, 1, 1).getTime() - 1,
     });
-    component.unmount();
   });
 
   it("should submit default filter on clear field", async () => {
@@ -80,6 +78,5 @@ describe("FilterMonth", () => {
 
     await btnSubmit.click();
     expect(mockOnChange).toHaveBeenCalledWith(createDefaultFilter("month"));
-    component.unmount();
   });
 });
