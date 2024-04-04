@@ -1,12 +1,14 @@
 import { act, render, screen, within } from "@testing-library/react";
 import { Provider } from "react-redux";
 import { MemoryRouter } from "react-router-dom";
+import { APP_PREFIX } from "../api/expenses.types";
 import { store } from "../store";
 import App from "./app";
 
 jest.mock("../api/firebase/firebase.ts");
 
 describe("App", () => {
+  localStorage.setItem(`${APP_PREFIX}@token`, "test_token");
   it("should render root", async () => {
     const app = await act(async () =>
       render(
