@@ -1,15 +1,15 @@
-import { Route, Routes } from "react-router-dom";
+import { useLayoutEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import React, { useLayoutEffect } from "react";
-import { Main } from "./main/main";
-import { Auth } from "./auth/auth";
-import { Settings } from "./settings";
+import { Route, Routes } from "react-router-dom";
 import { Header } from "../components/header/header";
-import { AuthState, checkAuth, signOut } from "../store/authSlice";
-import { AppDispatch, StoreRootState } from "../store";
 import { Private } from "../containers/private";
-import { Stats } from "./stats";
+import { AppDispatch, StoreRootState } from "../store";
+import { AuthState, checkAuth, signOut } from "../store/authSlice";
 import { About } from "./about";
+import { Auth } from "./auth/auth";
+import { Main } from "./main/main";
+import { Settings } from "./settings";
+import { Stats } from "./stats";
 
 function App() {
   sessionStorage.getItem("token");

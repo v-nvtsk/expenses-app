@@ -1,5 +1,4 @@
 import { render, within } from "@testing-library/react";
-import React from "react";
 import { createDefaultFilter } from "./filter-form";
 import { FilterMonth } from "./filter-month";
 

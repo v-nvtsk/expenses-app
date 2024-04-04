@@ -1,7 +1,6 @@
 import { render, within } from "@testing-library/react";
-import React from "react";
-import { FilterWeek } from "./filter-week";
 import { createDefaultFilter } from "./filter-form";
+import { FilterWeek } from "./filter-week";
 
 describe("FilterWeek", () => {
   it("should render", () => {

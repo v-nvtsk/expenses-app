@@ -1,11 +1,10 @@
 import { act, render, waitFor } from "@testing-library/react";
-import React from "react";
 import { Provider } from "react-redux";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
-import { store } from "../../store";
-import { Auth } from "./auth";
 import firebase from "../../api/firebase/firebase";
 import { AuthForm } from "../../components/auth-form";
+import { store } from "../../store";
+import { Auth } from "./auth";
 
 const MockAuthFrom = jest.fn();
 

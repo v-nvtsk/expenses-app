@@ -1,5 +1,4 @@
 import { act, render } from "@testing-library/react";
-import React from "react";
 import { BarChart } from "./bar-chart";
 
 const MockChart = jest.fn();

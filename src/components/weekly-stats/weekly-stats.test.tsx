@@ -1,6 +1,5 @@
-import { Provider } from "react-redux";
 import { act, render } from "@testing-library/react";
-import React from "react";
+import { Provider } from "react-redux";
 import { WeekLyStats } from ".";
 import { store } from "../../store";
 

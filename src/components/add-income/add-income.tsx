@@ -1,7 +1,7 @@
 import React from "react";
 import { useDispatch } from "react-redux";
-import { add } from "../../store/incomeSlice";
 import { AppDispatch } from "../../store";
+import { add } from "../../store/incomeSlice";
 
 export const AddIncome = () => {
   const dispatch = useDispatch<AppDispatch>();

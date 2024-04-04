@@ -1,11 +1,10 @@
-import React from "react";
-import { FilterWeek } from "./filter-week";
-import { FilterPeriod } from "./filter-period";
-import { Select } from "../select/select";
 import { ViewFilter } from "../../app/stats/stats";
-import { FilterMonth } from "./filter-month";
-import { FilterYear } from "./filter-year";
 import { DAY_MS } from "../../helpers/date-input/date-input";
+import { Select } from "../select/select";
+import { FilterMonth } from "./filter-month";
+import { FilterPeriod } from "./filter-period";
+import { FilterWeek } from "./filter-week";
+import { FilterYear } from "./filter-year";
 
 type Props = {
   filter: ViewFilter;

@@ -1,8 +1,8 @@
 import React, { memo, useEffect } from "react";
-import "./style.css";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, StoreRootState } from "../../store";
-import { add, CategoryState, readAll } from "../../store/categorySlice";
+import { CategoryState, add, readAll } from "../../store/categorySlice";
+import "./style.css";
 
 export const Settings = memo(() => {
   const categoryState = useSelector<StoreRootState>((state) => state.category) as CategoryState;

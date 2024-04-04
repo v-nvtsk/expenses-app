@@ -1,8 +1,7 @@
-import React from "react";
-import { BrowserRouter } from "react-router-dom";
 import { Provider } from "react-redux";
-import App from "./app";
+import { BrowserRouter } from "react-router-dom";
 import { store } from "../store";
+import App from "./app";
 import "./bootstrap.min.css";
 
 export const Root = () => (

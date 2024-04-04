@@ -1,9 +1,8 @@
-import { Provider } from "react-redux";
 import { act, fireEvent, render, within } from "@testing-library/react";
-import React from "react";
+import { Provider } from "react-redux";
 import { AddExpenses } from ".";
-import { store } from "../../store";
 import firebase from "../../api/firebase/firebase";
+import { store } from "../../store";
 
 jest.mock("../../api/firebase/firebase.ts");
 

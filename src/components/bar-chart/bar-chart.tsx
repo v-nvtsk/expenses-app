@@ -1,4 +1,4 @@
-import React, { memo } from "react";
+import { memo } from "react";
 import { Chart } from "react-google-charts";
 import { Category } from "../../api/expenses.types";
 import { Expense } from "../../store/expenseSlice";

@@ -1,11 +1,11 @@
 import React, { useRef } from "react";
+import { ViewFilter } from "../../app/stats/stats";
 import {
   DAY_MS,
   getCurrentWeekNumber,
   getFirstDayOfWeekByNumber,
   getWeekNumber,
 } from "../../helpers/date-input/date-input";
-import { ViewFilter } from "../../app/stats/stats";
 import { createDefaultFilter } from "./filter-form";
 
 type Props = {

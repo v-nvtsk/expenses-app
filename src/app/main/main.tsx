@@ -1,12 +1,11 @@
-import React from "react";
-import "./style.css";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { StoreRootState } from "../../store";
-import { AuthState } from "../../store/authSlice";
 import { AddExpenses } from "../../components/add-expenses";
 import { AddIncome } from "../../components/add-income";
 import { WeeklyStats } from "../../components/weekly-stats/weekly-stats";
+import { StoreRootState } from "../../store";
+import { AuthState } from "../../store/authSlice";
+import "./style.css";
 
 export function Main() {
   const authState = useSelector<StoreRootState>((state) => state.auth) as AuthState;

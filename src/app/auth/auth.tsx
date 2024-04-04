@@ -1,10 +1,10 @@
-import { Navigate, useLocation, useNavigate, useParams } from "react-router-dom";
+import { useLayoutEffect } from "react";
 import { useDispatch } from "react-redux";
-import React, { useLayoutEffect } from "react";
+import { Navigate, useLocation, useNavigate, useParams } from "react-router-dom";
 import { AuthForm } from "../../components/auth-form";
-import "./style.css";
 import { AppDispatch } from "../../store";
 import { AuthState, resetPassword, signIn, signUp } from "../../store/authSlice";
+import "./style.css";
 
 type Props = {
   authState: Partial<AuthState>;

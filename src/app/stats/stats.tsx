@@ -1,15 +1,15 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { AppDispatch, StoreRootState } from "../../store";
-import { Expense, read as readExpenses } from "../../store/expenseSlice";
-import { readAll as readCategories } from "../../store/categorySlice";
 import { BarChart } from "../../components/bar-chart";
-import { Table } from "../../components/table";
 import { FilterForm } from "../../components/filter-form";
-import "./style.css";
-import { sanitizeObject } from "../../helpers/sanitize-object";
 import { createDefaultFilter } from "../../components/filter-form/filter-form";
+import { Table } from "../../components/table";
+import { sanitizeObject } from "../../helpers/sanitize-object";
+import { AppDispatch, StoreRootState } from "../../store";
+import { readAll as readCategories } from "../../store/categorySlice";
+import { Expense, read as readExpenses } from "../../store/expenseSlice";
+import "./style.css";
 
 export type ViewFilter = {
   view: string;

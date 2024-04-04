@@ -1,10 +1,10 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { ExpenseState, read as readExpense } from "../../store/expenseSlice";
-import { AppDispatch, StoreRootState } from "../../store";
-import { createDefaultFilter } from "../filter-form/filter-form";
-import { IncomeState, read as readIncome } from "../../store/incomeSlice";
 import { formatMoney } from "../../helpers/format-number/format-number";
+import { AppDispatch, StoreRootState } from "../../store";
+import { ExpenseState, read as readExpense } from "../../store/expenseSlice";
+import { IncomeState, read as readIncome } from "../../store/incomeSlice";
+import { createDefaultFilter } from "../filter-form/filter-form";
 
 export const WeeklyStats = () => {
   const dispatch = useDispatch<AppDispatch>();

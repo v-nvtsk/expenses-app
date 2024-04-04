@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
-import { timestampToDateInputValue } from "../../helpers/date-input/date-input";
 import { ViewFilter } from "../../app/stats/stats";
+import { timestampToDateInputValue } from "../../helpers/date-input/date-input";
 
 type Props = {
   filter: ViewFilter;
