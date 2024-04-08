@@ -4,9 +4,15 @@ import { store } from "../store";
 import App from "./app";
 import "./bootstrap.min.css";
 
+declare global {
+  interface Window {
+    PUBLIC_PATH: string;
+  }
+}
+
 export const Root = () => (
   <Provider store={store}>
-    <BrowserRouter basename="/otus-jsbasic-dz49-expenses">
+    <BrowserRouter basename={window.PUBLIC_PATH}>
       <App />
     </BrowserRouter>
   </Provider>
