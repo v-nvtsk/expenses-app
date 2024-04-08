@@ -14,7 +14,7 @@ console.log("process.env.PUBLIC_URL: ", process.env.PUBLIC_URL);
 
 export const Root = () => (
   <Provider store={store}>
-    <BrowserRouter basename={process.env.PUBLIC_URL}>
+    <BrowserRouter basename={window.PUBLIC_PATH}>
       <App />
     </BrowserRouter>
   </Provider>
