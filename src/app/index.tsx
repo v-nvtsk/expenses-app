@@ -12,7 +12,7 @@ declare global {
 
 export const Root = () => (
   <Provider store={store}>
-    <BrowserRouter basename={window.PUBLIC_PATH}>
+    <BrowserRouter basename={process.env.PUBLIC_URL}>
       <App />
     </BrowserRouter>
   </Provider>
