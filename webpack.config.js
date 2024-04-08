@@ -2,8 +2,6 @@ const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const webpack = require("webpack");
 
-const PUBLIC_PATH = process.env.CI ? "/otus-jsbasic-dz49-expenses" : "/";
-
 module.exports = (env) => ({
   mode: env.mode === "development" ? "development" : "production",
   context: path.resolve(__dirname, "src"),
@@ -12,7 +10,7 @@ module.exports = (env) => ({
   output: {
     path: path.resolve(__dirname, "dist"),
     filename: "bundle.js",
-    publicPath: PUBLIC_PATH,
+    publicPath: "auto",
   },
   resolve: {
     extensions: [".js", ".ts", ".tsx"],
@@ -62,9 +60,6 @@ module.exports = (env) => ({
     ],
   },
   plugins: [
-    new webpack.DefinePlugin({
-      PUBLIC_PATH: JSON.stringify(PUBLIC_PATH),
-    }),
     new webpack.ProvidePlugin({
       React: "react",
     }),
