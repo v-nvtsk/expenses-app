@@ -9,6 +9,8 @@ declare global {
     PUBLIC_PATH: string;
   }
 }
+console.log("PUBLIC_PATH: ", window.PUBLIC_PATH);
+console.log("process.env.PUBLIC_URL: ", process.env.PUBLIC_URL);
 
 export const Root = () => (
   <Provider store={store}>
