@@ -9,7 +9,7 @@
     "start": "webpack serve --open --mode=development",
     "test": "jest",
     "test:watch": "npx jest ./src --coverage --watch",
-    "build": "npm run tsc & webpack --mode=production",
+    "build": "CI=true npm run tsc & webpack --mode=production",
     "tsc": "tsc --noEmit",
     "lint": "eslint --fix",
     "format": "prettier --write",
