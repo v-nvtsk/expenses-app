@@ -2,7 +2,7 @@ const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const webpack = require("webpack");
 
-const PUBLIC_PATH = process.env.CI ? "/otus-jsbasic-dz49-expenses" : "/";
+const PUBLIC_PATH = process.env.CI ? "/expenses-app" : "/";
 
 module.exports = (env) => ({
   mode: env.mode === "development" ? "development" : "production",

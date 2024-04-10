@@ -4,17 +4,11 @@ import { store } from "../store";
 import App from "./app";
 import "./bootstrap.min.css";
 
-declare global {
-  interface Window {
-    PUBLIC_PATH: string;
-  }
-}
-console.log("PUBLIC_PATH: ", window.PUBLIC_PATH);
-console.log("process.env.PUBLIC_URL: ", process.env.PUBLIC_URL);
+declare const PUBLIC_PATH: string;
 
 export const Root = () => (
   <Provider store={store}>
-    <BrowserRouter basename={window.PUBLIC_PATH}>
+    <BrowserRouter basename={PUBLIC_PATH}>
       <App />
     </BrowserRouter>
   </Provider>
