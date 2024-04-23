@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "target": "es2021" /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */,
+    "skipLibCheck": true,
+    "types": ["@types/node", "@commitlint/types"],
+    "noEmit": true,
+    "allowJs": true
+  },
+  "extends": "./tsconfig.json",
+  "include": [
+    ".eslintrc.js",
+    "stylelint.config.js",
+    "jest.config.ts",
+    "webpack.config.js",
+    "jest-setup.ts",
+    "commitlint.config.ts",
+    "lint-staged.config.js"
+  ],
+  "exclude": ["dist", "node_modules", "coverage", "reports"]
+}

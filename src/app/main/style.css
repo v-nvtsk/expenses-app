@@ -1,0 +1,32 @@
+.page__home {
+  padding: 20px 40px;
+}
+
+.home__unauthorized {
+  margin-top: 100px;
+  text-align: center;
+}
+
+.home__wrapper {
+  margin-top: 50px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+}
+
+@media (max-width: 768px) {
+  .home__wrapper {
+    grid-template-columns: 1fr;
+  }
+}
+
+.expenses_wrapper {
+  max-width: 500px;
+  padding-top: 100px;
+}
+
+.home-image {
+  object-fit: contain;
+  width: 100%;
+  height: 100%;
+}
